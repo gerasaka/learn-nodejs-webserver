@@ -1,0 +1,10 @@
+{
+  "name": "learn-nodejs-webserver",
+  "version": "1.0.0",
+  "description": "project for learning webserver with nodejs",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
