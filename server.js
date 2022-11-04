@@ -2,16 +2,22 @@ const http = require('http');
 
 const requestListener = (request, response) => {
   response.setHeader('Content-Type', 'text/html');
-  response.statusCode = 200;
 
   const { method, url } = request;
 
   if (url === '/') {
-    if (method === 'GET') response.end('<h1>Homepage</h1>');
-    else response.end(`<h1>Can not access ${method} request on this page</h1>`);
+    if (method === 'GET') {
+      response.statusCode = 200;
+      response.end('<h1>Homepage</h1>');
+    } else {
+      response.statusCode = 400;
+      response.end(`<h1>Can not access ${method} request on this page</h1>`);
+    }
   } else if (url === '/about') {
-    if (method === 'GET') response.end('<h1>About</h1>');
-    else if (method === 'POST') {
+    if (method === 'GET') {
+      response.statusCode = 200;
+      response.end('<h1>About</h1>');
+    } else if (method === 'POST') {
       let body = [];
 
       request.on('data', chunk => {
@@ -22,12 +28,17 @@ const requestListener = (request, response) => {
         body = Buffer.concat(body).toString();
         const { name } = JSON.parse(body);
 
+        response.statusCode = 200;
         response.end(`<h1>Hi, ${name}!</h1>`);
       });
     } else {
+      response.statusCode = 400;
       response.end(`<h1>Can not access ${method} request on this page</h1>`);
     }
-  } else response.end('<h1>Page not found!</h1>');
+  } else {
+    response.statusCode = 404;
+    response.end('<h1>Page not found!</h1>');
+  }
 };
 
 const server = http.createServer(requestListener);
