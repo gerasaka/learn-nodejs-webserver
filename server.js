@@ -1,22 +1,36 @@
 const http = require('http');
 
 const requestListener = (request, response) => {
-  response.setHeader('Content-Type', 'text/html');
+  response.setHeader('Content-Type', 'application/json');
 
   const { method, url } = request;
 
   if (url === '/') {
     if (method === 'GET') {
       response.statusCode = 200;
-      response.end('<h1>Homepage</h1>');
+      response.end(
+        JSON.stringify({
+          message: 'success',
+          content: 'Homepage',
+        })
+      );
     } else {
       response.statusCode = 400;
-      response.end(`<h1>Can not access ${method} request on this page</h1>`);
+      response.end(
+        JSON.stringify({
+          message: `Can not access ${method} request on this page</h1>`,
+        })
+      );
     }
   } else if (url === '/about') {
     if (method === 'GET') {
       response.statusCode = 200;
-      response.end('<h1>About</h1>');
+      response.end(
+        JSON.stringify({
+          message: 'success',
+          content: 'About',
+        })
+      );
     } else if (method === 'POST') {
       let body = [];
 
@@ -29,15 +43,28 @@ const requestListener = (request, response) => {
         const { name } = JSON.parse(body);
 
         response.statusCode = 200;
-        response.end(`<h1>Hi, ${name}!</h1>`);
+        response.end(
+          JSON.stringify({
+            message: 'success',
+            content: `Hi, ${name}!`,
+          })
+        );
       });
     } else {
       response.statusCode = 400;
-      response.end(`<h1>Can not access ${method} request on this page</h1>`);
+      response.end(
+        JSON.stringify({
+          message: `Can not access ${method} request on this page</h1>`,
+        })
+      );
     }
   } else {
     response.statusCode = 404;
-    response.end('<h1>Page not found!</h1>');
+    response.end(
+      JSON.stringify({
+        message: 'Page not found!',
+      })
+    );
   }
 };
 
