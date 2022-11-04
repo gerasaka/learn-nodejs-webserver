@@ -4,25 +4,30 @@ const requestListener = (request, response) => {
   response.setHeader('Content-Type', 'text/html');
   response.statusCode = 200;
 
-  const { method } = request;
+  const { method, url } = request;
 
-  if (method === 'GET') {
-    response.end('<h1>Hello!</h1>');
-  }
+  if (url === '/') {
+    if (method === 'GET') response.end('<h1>Homepage</h1>');
+    else response.end(`<h1>Can not access ${method} request on this page</h1>`);
+  } else if (url === '/about') {
+    if (method === 'GET') response.end('<h1>About</h1>');
+    else if (method === 'POST') {
+      let body = [];
 
-  if (method === 'POST') {
-    let body = [];
+      request.on('data', chunk => {
+        body.push(chunk);
+      });
 
-    request.on('data', chunk => {
-      body.push(chunk);
-    });
+      request.on('end', () => {
+        body = Buffer.concat(body).toString();
+        const { name } = JSON.parse(body);
 
-    request.on('end', () => {
-      body = Buffer.concat(body).toString();
-      const { name } = JSON.parse(body);
-      response.end(`<h1>Hi, ${name}!</h1>`);
-    });
-  }
+        response.end(`<h1>Hi, ${name}!</h1>`);
+      });
+    } else {
+      response.end(`<h1>Can not access ${method} request on this page</h1>`);
+    }
+  } else response.end('<h1>Page not found!</h1>');
 };
 
 const server = http.createServer(requestListener);
