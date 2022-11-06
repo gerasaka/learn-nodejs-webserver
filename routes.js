@@ -34,6 +34,14 @@ const routes = [
       return 'Page not found';
     },
   },
+  {
+    method: 'GET',
+    path: '/hello/{name?}',
+    handler: (request, h) => {
+      const { name = 'stranger' } = request.params;
+      return `Hello, ${name}!`;
+    },
+  },
 ];
 
 module.exports = routes;
