@@ -35,7 +35,7 @@ const addNoteHandler = (request, h) => {
   return h
     .response({
       status: 'fail',
-      message: 'Fail to add note',
+      message: 'Failed to add note',
     })
     .code(500);
 };
@@ -101,9 +101,34 @@ const editNoteByIdHandler = (request, h) => {
     .code(404);
 };
 
+const deleteNoteByIdHandler = (request, h) => {
+  const { id } = request.params;
+
+  const index = notes.findIndex(note => note.id === Number(id));
+
+  if (index !== -1) {
+    notes.splice(index, 1);
+
+    return h
+      .response({
+        status: 'success',
+        message: 'Note deleted',
+      })
+      .code(200);
+  }
+
+  return h
+    .response({
+      status: 'fail',
+      message: 'Failed delete note, ID not found',
+    })
+    .code(404);
+};
+
 module.exports = {
   addNoteHandler,
   getAllNotesHandler,
   getNoteByIdHandler,
   editNoteByIdHandler,
+  deleteNoteByIdHandler,
 };
